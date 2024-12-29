@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arian Corporation Panel</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(120deg, #1f1f1f, #484848);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container, .panel-container {
+            width: 600px;
+            background: #2e2e2e;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-container {
+            display: none;
+        }
+
+        .panel-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .panel-header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f4b400;
+        }
+
+        .status-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .status-section span {
+            font-size: 18px;
+            display: block;
+        }
+
+        .status-section #server-status {
+            color: red;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #777;
+            border-radius: 6px;
+            background: #3a3a3a;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 8px;
+            background: #f4b400;
+            color: black;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #f6c600;
+        }
+
+        .stream-mode {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .status-bar {
+            visibility: hidden;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .status-bar.success {
+            visibility: visible;
+            color: #28a745;
+        }
+
+        .status-bar.error {
+            visibility: visible;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="login-container">
+        <div class="panel-header">
+            <h1>Login</h1>
+        </div>
+        <input type="text" id="username" placeholder="Username" />
+        <input type="password" id="password" placeholder="Password" />
+        <button onclick="login()">Login</button>
+        <div id="login-status" class="status-bar"></div>
+    </div>
+
+    <div class="panel-container" id="panel-container" style="display: none;">
+        <div class="panel-header">
+            <h1>ARIAN CORPORATION</h1>
+        </div>
+
+        <div class="status-section">
+            <span>Server Status: <span id="server-status">Checking...</span></span>
+            <span id="ip-address">Fetching IP...</span>
+        </div>
+
+        <input type="text" id="custom-ip" placeholder="Enter IP Address" />
+        <button onclick="updateIP()">Update IP</button>
+
+        <button onclick="loadFeature('Aimbot++')">AIMBOT ++</button>
+        <button onclick="loadFeature('Aimbot Neck')">AIMBOT NECK</button>
+        <button onclick="loadFeature('Aimbot Legit')">AIMBOT LEGIT</button>
+        <button onclick="loadFeature('Load Aimbot')">LOAD AIMBOT</button>
+        <button onclick="toggleFeature('Loaded Aimbot')">LOADED AIMBOT : OFF</button>
+
+        <div class="stream-mode">
+            <button onclick="toggleStreamMode()">Stream Mode: OFF</button>
+        </div>
+
+        <div id="status" class="status-bar"></div>
+    </div>
+
+    <script>
+        const loginContainer = document.getElementById("login-container");
+        const panelContainer = document.getElementById("panel-container");
+        const loginStatus = document.getElementById("login-status");
+        const serverStatus = document.getElementById("server-status");
+        const ipAddressDisplay = document.getElementById("ip-address");
+        const statusBar = document.getElementById("status");
+        let streamMode = false;
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (username === "Arian" && password === "9735") {
+                loginContainer.style.display = "none";
+                panelContainer.style.display = "block";
+            } else {
+                showLoginStatus("Invalid username or password.", "error");
+            }
+        }
+
+        function showLoginStatus(message, type) {
+            loginStatus.textContent = message;
+            loginStatus.className = `status-bar ${type}`;
+        }
+
+        function updateIP() {
+            const customIP = document.getElementById("custom-ip").value;
+            if (customIP) {
+                ipAddressDisplay.textContent = `IP Updated to: ${customIP}`;
+                showStatus("IP updated successfully!", "success");
+            } else {
+                showStatus("Please enter a valid IP address.", "error");
+            }
+        }
+
+        function loadFeature(feature) {
+            showStatus(`Loading ${feature}...`, "success");
+            setTimeout(() => {
+                showStatus(`${feature} Enabled Successfully!`, "success");
+            }, 5000);
+        }
+
+        function toggleFeature(feature) {
+            const button = event.target;
+            if (button.textContent.includes("OFF")) {
+                button.textContent = `${feature} : ON`;
+                showStatus(`${feature} Enabled!`, "success");
+            } else {
+                button.textContent = `${feature} : OFF`;
+                showStatus(`${feature} Disabled!`, "error");
+            }
+        }
+
+        function toggleStreamMode() {
+            const button = event.target;
+            streamMode = !streamMode;
+            button.textContent = `Stream Mode: ${streamMode ? "ON" : "OFF"}`;
+            showStatus(streamMode ? "Stream Mode Activated!" : "Stream Mode Deactivated!", streamMode ? "success" : "error");
+        }
+
+        function showStatus(message, type) {
+            statusBar.textContent = message;
+            statusBar.className = `status-bar ${type}`;
+        }
+
+        async function fetchIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                ipAddressDisplay.textContent = `Current IP: ${data.ip}`;
+                serverStatus.textContent = "Online";
+                serverStatus.style.color = "#28a745";
+            } catch (error) {
+                ipAddressDisplay.textContent = "Failed to fetch IP.";
+                serverStatus.textContent = "Offline";
+                serverStatus.style.color = "#dc3545";
+            }
+        }
+
+        window.onload = () => {
+            loginContainer.style.display = "block";
+            fetchIP();
+        };
+    </script>
+</body>
+</html>
